@@ -18,7 +18,11 @@ class ChatController extends Controller{
         $user_a = auth()->user();
         $user_b = User::where('email',$request->email)->first();
 
-        if($user_a->email == $user_b->email){
+        if (!$user_b) {
+            return redirect()->route('dashboard')->with('err','Error usuario no encontrado');
+        }
+
+        if($user_a->email == $user_b->email ){
             return redirect()->route('dashboard')->with('err','No puedes crear un chat con tu mismo correo');
         }
 
