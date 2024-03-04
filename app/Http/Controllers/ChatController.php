@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Chat;
 use App\Models\User;
-use Exception;
 use Illuminate\Http\Request;
 
 class ChatController extends Controller{
@@ -14,10 +13,14 @@ class ChatController extends Controller{
        
     }
 
-    public function chat_with(User $user, Request $request){
+    public function chat_with(Request $request){
 
         $user_a = auth()->user();
         $user_b = User::where('email',$request->email)->first();
+
+        if($user_a->email == $user_b->email){
+            return redirect()->route('dashboard')->with('err','No puedes crear un chat con tu mismo correo');
+        }
 
         if ($user_b) {
             $chat = $user_a->chats()->wherehas('users', function($q) use ($user_b){
